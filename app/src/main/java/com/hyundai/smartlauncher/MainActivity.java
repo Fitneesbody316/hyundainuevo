@@ -162,7 +162,7 @@ public class MainActivity extends Activity {
         b.setPadding(dp(8),dp(4),dp(8),dp(4));
         b.setOnFocusChangeListener((v,focus)->v.setBackground(shape(
             focus?Color.rgb(48,76,48):(primary?GREEN:Color.rgb(36,51,61)),
-            focus?Color.WHITE:(primary?GREEN:Color.rgb(59,78,87))));
+            focus?Color.WHITE:(primary?GREEN:Color.rgb(59,78,87)))));
         return b;
     }
     private View bigCard(String tag,String title,String detail,Runnable action) {
