@@ -88,7 +88,7 @@ public class MainActivity extends Activity {
             weightParams());
         cards.addView(bigCard("Apps", "Aplicaciones", "Ver aplicaciones instaladas", () -> showAppPicker()),
             weightParams());
-        page.addView(cards);
+        page.addView(cards, params(-1, dp(154)));
 
         TextView toolsTitle = text("ACCESOS RÁPIDOS", 12, GREEN, true);
         LinearLayout.LayoutParams tp = params(-2,-2);
@@ -120,7 +120,7 @@ public class MainActivity extends Activity {
             TextView empty=text("No se encontraron aplicaciones favoritas instaladas. Usa Aplicaciones para ver las disponibles.",14,
                 Color.LTGRAY,false);
             page.addView(empty);
-        } else page.addView(favorites);
+        } else page.addView(favorites, params(-1, dp(88)));
 
         TextView footer=text("Las funciones disponibles dependen del sistema y del firmware del televisor.",
             11, Color.rgb(142,158,166), false);
