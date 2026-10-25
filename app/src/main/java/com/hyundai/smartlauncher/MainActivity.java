@@ -67,9 +67,11 @@ public class MainActivity extends Activity {
         header.addView(brandBox, new LinearLayout.LayoutParams(0, -2, 1));
         clock = text("", 15, Color.WHITE, true);
         clock.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-        header.addView(clock);
+        LinearLayout.LayoutParams clockParams = params(-2, dp(48));
+        clockParams.rightMargin = dp(16);
+        header.addView(clock, clockParams);
         header.addView(actionButton("⚙", () -> openSettings(Settings.ACTION_SETTINGS), false),
-            new LinearLayout.LayoutParams(dp(52), dp(48)));
+            new LinearLayout.LayoutParams(dp(48), dp(48)));
         page.addView(header);
         updateClock();
 
@@ -82,22 +84,22 @@ public class MainActivity extends Activity {
         LinearLayout cards = row();
         cards.addView(bigCard("TV", "Televisión", "Abrir la aplicación de TV disponible", () -> openTv()),
             weightParams());
-        cards.addView(bigCard("HDMI", "Entradas externas", "Abrir control de entradas si existe", () -> showInputNotice()),
+        cards.addView(bigCard("ENTRADAS", "Entradas", "TV, HDMI, AV y USB", () -> showInputs()),
             weightParams());
         cards.addView(bigCard("USB", "Archivos y medios", "Abrir un explorador disponible", () -> openFileBrowser()),
             weightParams());
-        cards.addView(bigCard("Apps", "Aplicaciones", "Ver aplicaciones instaladas", () -> showAppPicker()),
+        cards.addView(bigCard("APPS", "Aplicaciones", "Ver aplicaciones instaladas", () -> showAppPicker()),
             weightParams());
-        page.addView(cards, params(-1, dp(154)));
+        cards.addView(bigCard("+", "Añadir apps", "Elegir una aplicación instalada", () -> showAppPicker()),
+            weightParams());
+        page.addView(cards, params(-1, dp(164)));
 
         TextView toolsTitle = text("ACCESOS RÁPIDOS", 12, GREEN, true);
         LinearLayout.LayoutParams tp = params(-2,-2);
         tp.topMargin = dp(22); tp.bottomMargin = dp(10);
         page.addView(toolsTitle,tp);
         LinearLayout tools = row();
-        tools.addView(actionButton("Gestionar aplicaciones", this::showAppPicker, true), weightParams());
-        tools.addView(actionButton("Configuración", () -> openSettings(Settings.ACTION_SETTINGS), true), weightParams());
-        tools.addView(actionButton("Red", () -> openSettings(Settings.ACTION_WIFI_SETTINGS), true), weightParams());
+        tools.addView(actionButton("Añadir aplicaciones", this::showAppPicker, true), weightParams());
         page.addView(tools);
 
         TextView favTitle = text("TUS APLICACIONES", 12, GREEN, true);
@@ -241,10 +243,30 @@ public class MainActivity extends Activity {
         try { Intent i=new Intent(Intent.ACTION_GET_CONTENT); i.setType("*/*"); startActivity(Intent.createChooser(i,"Abrir archivo")); }
         catch(Exception e){toast("No hay un explorador de archivos disponible.");}
     }
-    private void showInputNotice() {
-        new AlertDialog.Builder(this).setTitle("Entradas HDMI")
-            .setMessage("El cambio de entrada depende del firmware del televisor. Esta aplicación no puede garantizar el control de HDMI en este modelo; no se mostrará una entrada como seleccionada si no podemos cambiarla realmente.")
-            .setPositiveButton("Entendido",null).show();
+    private void showInputs() {
+        final String[] inputs = {"TV", "HDMI 1", "HDMI 2", "HDMI 3", "AV", "USB"};
+        new AlertDialog.Builder(this)
+            .setTitle("Entradas del televisor")
+            .setItems(inputs, (dialog, which) -> {
+                String selected = inputs[which];
+                if ("TV".equals(selected)) {
+                    openTv();
+                } else if ("USB".equals(selected)) {
+                    openFileBrowser();
+                } else {
+                    showInputUnavailable(selected);
+                }
+            })
+            .setNegativeButton("Cerrar", null)
+            .show();
+    }
+
+    private void showInputUnavailable(String input) {
+        new AlertDialog.Builder(this)
+            .setTitle(input)
+            .setMessage("La selección de esta entrada depende del firmware del televisor. Este launcher no puede cambiarla directamente si Hyundai/Realtek no expone esa función.")
+            .setPositiveButton("Entendido", null)
+            .show();
     }
     private boolean launchFirst(String[] packages) {
         for(String pkg:packages) {
