@@ -1,0 +1,14 @@
+plugins {
+    id 'com.android.application'
+}
+android {
+    namespace 'com.hyundai.smartlauncher'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'com.hyundai.smartlauncher'
+        minSdk 25
+        targetSdk 28
+        versionCode 4
+        versionName '4.0'
+    }
+}
